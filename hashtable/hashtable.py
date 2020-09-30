@@ -107,6 +107,7 @@ class HashTable:
         # if linked list is empty
         if current_node is None:
             self.buckets[index] = new_node
+            self.items += 1
             return
 
         # if linked list has something in there and we
@@ -119,6 +120,7 @@ class HashTable:
         # else if no key matched
         new_node.next = self.buckets[index]
         self.buckets[index] = new_node
+        self.items += 1
 
     def delete(self, key):
         """
@@ -134,18 +136,25 @@ class HashTable:
         # if linked list is empty
         if current_node is None:
             return None
-        # if linked list has something in there and we
-        # get a key that matches
+
+        # if node is in the head position
+        if current_node.key == key:
+            self.buckets[index] = current_node.next
+            self.items -= 1
+            return
+
+        previous_node = current_node
+        current_node = current_node.next
+        # if node in the middle or the end position
         while current_node is not None:
             if current_node.key == key:
-                deleted_node = current_node
-                if current_node.next is None:
-                    self.buckets[index] = None
-                    return deleted_node
+                # previous_node.next should point to current_node.next
+                previous_node.next = current_node.next
+                self.items -= 1
+                return
             current_node = current_node.next
-
         # else if no key matched
-        return None
+        print("No matching key was found.")
 
     def get(self, key):
         """
