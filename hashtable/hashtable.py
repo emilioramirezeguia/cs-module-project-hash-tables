@@ -101,7 +101,6 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        print(f"Index: {index}, Key: {key}, Value: {value}")
         new_node = HashTableEntry(key, value)
         current_node = self.buckets[index]
 
@@ -110,13 +109,14 @@ class HashTable:
             self.buckets[index] = new_node
             return
 
-        # if linked list has something in there
+        # if linked list has something in there and we
+        # get a key that matches
         while current_node is not None:
             if current_node.key == key:
                 current_node.value = value
             current_node = current_node.next
 
-        # if there wasn't an existing node with the same key
+        # else if no key matched
         new_node.next = self.buckets[index]
         self.buckets[index] = new_node
 
@@ -129,10 +129,23 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        if not self.buckets[index]:
-            print("This key doesn't exist.")
-        else:
-            self.buckets[index] = None
+        current_node = self.buckets[index]
+
+        # if linked list is empty
+        if current_node is None:
+            return None
+        # if linked list has something in there and we
+        # get a key that matches
+        while current_node is not None:
+            if current_node.key == key:
+                deleted_node = current_node
+                if current_node.next is None:
+                    self.buckets[index] = None
+                    return deleted_node
+            current_node = current_node.next
+
+        # else if no key matched
+        return None
 
     def get(self, key):
         """
@@ -145,13 +158,18 @@ class HashTable:
         index = self.hash_index(key)
         current_node = self.buckets[index]
 
-        if current_node is not None:
-            while current_node is not None:
-                if current_node.key == key:
-                    return current_node.value
-                current_node = current_node.next
-        else:
+        # if linked list is empty
+        if current_node is None:
             return None
+        # if linked list has something in there and we
+        # get a key that matches
+        while current_node is not None:
+            if current_node.key == key:
+                return current_node.value
+            current_node = current_node.next
+
+        # else if no key matched
+        return None
 
     def resize(self, new_capacity):
         """
@@ -163,58 +181,73 @@ class HashTable:
         # Your code here
 
 
-# if __name__ == "__main__":
-#     ht = HashTable(8)
+if __name__ == "__main__":
+    ht = HashTable(8)
 
-#     ht.put("line_1", "'Twas brillig, and the slithy toves")
-#     ht.put("line_2", "Did gyre and gimble in the wabe:")
-#     ht.put("line_3", "All mimsy were the borogoves,")
-#     ht.put("line_4", "And the mome raths outgrabe.")
-#     ht.put("line_5", '"Beware the Jabberwock, my son!')
-#     ht.put("line_6", "The jaws that bite, the claws that catch!")
-#     ht.put("line_7", "Beware the Jubjub bird, and shun")
-#     ht.put("line_8", 'The frumious Bandersnatch!"')
-#     ht.put("line_9", "He took his vorpal sword in hand;")
-#     ht.put("line_10", "Long time the manxome foe he sought--")
-#     ht.put("line_11", "So rested he by the Tumtum tree")
-#     ht.put("line_12", "And stood awhile in thought.")
+    ht.put("line_1", "'Twas brillig, and the slithy toves")
+    ht.put("line_2", "Did gyre and gimble in the wabe:")
+    ht.put("line_3", "All mimsy were the borogoves,")
+    ht.put("line_4", "And the mome raths outgrabe.")
+    ht.put("line_5", '"Beware the Jabberwock, my son!')
+    ht.put("line_6", "The jaws that bite, the claws that catch!")
+    ht.put("line_7", "Beware the Jubjub bird, and shun")
+    ht.put("line_8", 'The frumious Bandersnatch!"')
+    ht.put("line_9", "He took his vorpal sword in hand;")
+    ht.put("line_10", "Long time the manxome foe he sought--")
+    ht.put("line_11", "So rested he by the Tumtum tree")
+    ht.put("line_12", "And stood awhile in thought.")
 
-#     print("")
+    print("")
 
-#     # Test storing beyond capacity
-#     for i in range(1, 13):
-#         print(ht.get(f"line_{i}"))
+    # Test storing beyond capacity
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-#     # Test resizing
-#     old_capacity = ht.get_num_slots()
-#     ht.resize(ht.capacity * 2)
-#     new_capacity = ht.get_num_slots()
+    # Test resizing
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
 
-#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-#     # Test if data intact after resizing
-#     for i in range(1, 13):
-#         print(ht.get(f"line_{i}"))
+    # Test if data intact after resizing
+    for i in range(1, 13):
+        print(ht.get(f"line_{i}"))
 
-#     print("")
-test_table = HashTable(8)
-test_table.put("key-0", "val-0")
-test_table.put("key-1", "val-1")
-test_table.put("key-2", "val-2")
-test_table.put("key-3", "val-3")
-test_table.put("key-4", "val-4")
-test_table.put("key-5", "val-5")
-test_table.put("key-6", "val-6")
-test_table.put("key-7", "val-7")
-test_table.put("key-8", "val-8")
-test_table.put("key-9", "val-9")
-print("Should be val-0:", test_table.get("key-0"))
-print("Should be val-1:", test_table.get("key-1"))
-print("Should be val-2", test_table.get("key-2"))
-print("Should be val-3", test_table.get("key-3"))
-print("Should be val-4", test_table.get("key-4"))
-print("Should be val-5", test_table.get("key-5"))
-print("Should be val-6", test_table.get("key-6"))
-print("Should be val-7", test_table.get("key-7"))
-print("Should be val-8:", test_table.get("key-8"))
-print("Should be val-9:", test_table.get("key-9"))
+    print("")
+# test_table = HashTable(8)
+# test_table.put("key-0", "val-0")
+# test_table.put("key-1", "val-1")
+# test_table.put("key-2", "val-2")
+# test_table.put("key-3", "val-3")
+# test_table.put("key-4", "val-4")
+# test_table.put("key-5", "val-5")
+# test_table.put("key-6", "val-6")
+# test_table.put("key-7", "val-7")
+# test_table.put("key-8", "val-8")
+# test_table.put("key-9", "val-9")
+# print("Should be val-0:", test_table.get("key-0"))
+# print("Should be val-1:", test_table.get("key-1"))
+# print("Should be val-2", test_table.get("key-2"))
+# print("Should be val-3", test_table.get("key-3"))
+# print("Should be val-4", test_table.get("key-4"))
+# print("Should be val-5", test_table.get("key-5"))
+# print("Should be val-6", test_table.get("key-6"))
+# print("Should be val-7", test_table.get("key-7"))
+# print("Should be val-8:", test_table.get("key-8"))
+# print("Should be val-9:", test_table.get("key-9"))
+# test_table.delete("key-1")
+# test_table.delete("key-3")
+# test_table.delete("key-5")
+# test_table.delete("key-7")
+# test_table.delete("key-9")
+# print("Should be val-0:", test_table.get("key-0"))
+# print("Should be None:", test_table.get("key-1"))
+# print("Should be val-2", test_table.get("key-2"))
+# print("Should be None", test_table.get("key-3"))
+# print("Should be val-4", test_table.get("key-4"))
+# print("Should be None", test_table.get("key-5"))
+# print("Should be val-6", test_table.get("key-6"))
+# print("Should be None", test_table.get("key-7"))
+# print("Should be val-8:", test_table.get("key-8"))
+# print("Should be None:", test_table.get("key-9"))
