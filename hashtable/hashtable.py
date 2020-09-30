@@ -100,40 +100,25 @@ class HashTable:
 
         Implement this.
         """
-        # get the index where we'll insert our hash table entry
         index = self.hash_index(key)
-        print("Index", index)
-
-        # create a new hash table entry called new node
+        print(f"Index: {index}, Key: {key}, Value: {value}")
         new_node = HashTableEntry(key, value)
-        print("Node", new_node)
-
-        # grab a reference to the head of the linked list at the index
         current_node = self.buckets[index]
-        print("Current Node", current_node)
 
+        # if linked list is empty
         if current_node is None:
             self.buckets[index] = new_node
-            self.buckets[index].head = new_node
+            return
 
-        # search the linked list at the index to see if
-        # the provided key already exists
+        # if linked list has something in there
         while current_node is not None:
-            # if the key does exist, a hash table entry is already there
-            if key == current_node.key:
-                # overwrite the current value with the provided value
+            if current_node.key == key:
                 current_node.value = value
-            # keep looking through the linked list by updating our
-            # current node to it's next node
             current_node = current_node.next
 
-        # if no key was found, assign new node's next pointer
-        # to the current node
-        new_node.next = current_node
-        # then assign the head of the linked list to equal the new node
+        # if there wasn't an existing node with the same key
+        new_node.next = self.buckets[index]
         self.buckets[index] = new_node
-        # and finally incremenet the item count by 1
-        self.items = self.items + 1
 
     def delete(self, key):
         """
@@ -158,19 +143,15 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-
         current_node = self.buckets[index]
 
-        while current_node is not None:
-            if key == current_node.key:
-                return current_node.value
-            current_node = current_node.next
-
-        return None
-        # if not self.buckets[index]:
-        #     return None
-        # else:
-        #     return self.buckets[index].value
+        if current_node is not None:
+            while current_node is not None:
+                if current_node.key == key:
+                    return current_node.value
+                current_node = current_node.next
+        else:
+            return None
 
     def resize(self, new_capacity):
         """
@@ -227,14 +208,13 @@ test_table.put("key-6", "val-6")
 test_table.put("key-7", "val-7")
 test_table.put("key-8", "val-8")
 test_table.put("key-9", "val-9")
-print("Should be val-0", test_table.get("key-0"))
-print("Should be val-1", test_table.get("key-1"))
+print("Should be val-0:", test_table.get("key-0"))
+print("Should be val-1:", test_table.get("key-1"))
 print("Should be val-2", test_table.get("key-2"))
 print("Should be val-3", test_table.get("key-3"))
 print("Should be val-4", test_table.get("key-4"))
 print("Should be val-5", test_table.get("key-5"))
 print("Should be val-6", test_table.get("key-6"))
 print("Should be val-7", test_table.get("key-7"))
-print("Should be val-8", test_table.get("key-8"))
-print(test_table.buckets)
-print("Should be val-9", test_table.get("key-9"))
+print("Should be val-8:", test_table.get("key-8"))
+print("Should be val-9:", test_table.get("key-9"))
