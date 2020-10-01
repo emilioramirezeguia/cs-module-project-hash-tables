@@ -1,6 +1,18 @@
 def no_dups(s):
-    # Your code here
+    dictionary = {}
 
+    words = s.split()
+    new_s = ""
+
+    for word in words:
+        if word not in dictionary:
+            dictionary[word] = word
+
+    for key in dictionary:
+        new_s = new_s + " " + dictionary[key]
+
+    new_s = new_s.strip()
+    return new_s
 
 
 if __name__ == "__main__":
