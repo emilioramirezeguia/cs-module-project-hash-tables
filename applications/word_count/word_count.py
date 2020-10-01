@@ -1,9 +1,8 @@
 def word_count(s):
     dictionary = {}
 
-    # if it contains any character that's not from the alphabet
-    # return empty dictionary
-    if s.isalpha():
+    # if the input is empty return empty dictionary
+    if not s or '":;,.-+=/\|[]{}()*^&' in s:
         return dictionary
 
     # turn string to lowercase
