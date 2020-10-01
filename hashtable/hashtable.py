@@ -8,6 +8,9 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    def __repr__(self):
+        return f"HashTableEntry({self.key},{self.value})"
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -24,6 +27,9 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.buckets = [None] * capacity
+        self.items = 0
+
+    # def __repr__(self):
 
     def get_num_slots(self):
         """
@@ -35,7 +41,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -43,7 +49,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.items / self.capacity
 
     def fnv1(self, key):
         """
@@ -94,8 +100,31 @@ class HashTable:
 
         Implement this.
         """
+        # check if resize is necessary
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+
         index = self.hash_index(key)
-        self.buckets[index] = HashTableEntry(key, value)
+        new_node = HashTableEntry(key, value)
+        current_node = self.buckets[index]
+
+        # if linked list is empty
+        if current_node is None:
+            self.buckets[index] = new_node
+            self.items += 1
+            return
+
+        # if linked list has something in there and we
+        # get a key that matches
+        while current_node is not None:
+            if current_node.key == key:
+                current_node.value = value
+            current_node = current_node.next
+
+        # else if no key matched
+        new_node.next = self.buckets[index]
+        self.buckets[index] = new_node
+        self.items += 1
 
     def delete(self, key):
         """
@@ -105,11 +134,38 @@ class HashTable:
 
         Implement this.
         """
+        # check if resize is necessary
+        if self.get_load_factor() < 0.2:
+            if self.capacity // 2 > MIN_CAPACITY:
+                self.resize(self.capacity // 2)
+            else:
+                self.resize(MIN_CAPACITY)
+
         index = self.hash_index(key)
-        if not self.buckets[index]:
-            print("This key doesn't exist.")
-        else:
-            self.buckets[index] = None
+        current_node = self.buckets[index]
+
+        # if linked list is empty
+        if current_node is None:
+            return None
+
+        # if node is in the head position
+        if current_node.key == key:
+            self.buckets[index] = current_node.next
+            self.items -= 1
+            return
+
+        previous_node = current_node
+        current_node = current_node.next
+        # if node in the middle or the end position
+        while current_node is not None:
+            if current_node.key == key:
+                # previous_node.next should point to current_node.next
+                previous_node.next = current_node.next
+                self.items -= 1
+                return
+            current_node = current_node.next
+        # else if no key matched
+        print("No matching key was found.")
 
     def get(self, key):
         """
@@ -120,10 +176,20 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        if not self.buckets[index]:
+        current_node = self.buckets[index]
+
+        # if linked list is empty
+        if current_node is None:
             return None
-        else:
-            return self.buckets[index].value
+        # if linked list has something in there and we
+        # get a key that matches
+        while current_node is not None:
+            if current_node.key == key:
+                return current_node.value
+            current_node = current_node.next
+
+        # else if no key matched
+        return None
 
     def resize(self, new_capacity):
         """
@@ -131,8 +197,22 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
+
+        # save old list as a variable
+        # update the current capacity to the new capacity
+        # create a new list full of Nones equal to the updated capacity
+        # reset items count
+        # iterate through old buckets, traverse through each linked list, call put() on each node and update item count
         """
-        # Your code here
+        old_buckets = self.buckets
+        self.capacity = new_capacity
+        self.buckets = [None] * self.capacity
+        self.items = 0
+        for node in old_buckets:
+            while node is not None:
+                self.put(node.key, node.value)
+                self.items += 1
+                node = node.next
 
 
 if __name__ == "__main__":
@@ -157,15 +237,51 @@ if __name__ == "__main__":
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
-    # # Test resizing
-    # old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
-    # new_capacity = ht.get_num_slots()
+    # Test resizing
+    old_capacity = ht.get_num_slots()
+    ht.resize(ht.capacity * 2)
+    new_capacity = ht.get_num_slots()
 
-    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
     for i in range(1, 13):
         print(ht.get(f"line_{i}"))
 
     print("")
+# test_table = HashTable(8)
+# test_table.put("key-0", "val-0")
+# test_table.put("key-1", "val-1")
+# test_table.put("key-2", "val-2")
+# test_table.put("key-3", "val-3")
+# test_table.put("key-4", "val-4")
+# test_table.put("key-5", "val-5")
+# test_table.put("key-6", "val-6")
+# test_table.put("key-7", "val-7")
+# test_table.put("key-8", "val-8")
+# test_table.put("key-9", "val-9")
+# print("Should be val-0:", test_table.get("key-0"))
+# print("Should be val-1:", test_table.get("key-1"))
+# print("Should be val-2", test_table.get("key-2"))
+# print("Should be val-3", test_table.get("key-3"))
+# print("Should be val-4", test_table.get("key-4"))
+# print("Should be val-5", test_table.get("key-5"))
+# print("Should be val-6", test_table.get("key-6"))
+# print("Should be val-7", test_table.get("key-7"))
+# print("Should be val-8:", test_table.get("key-8"))
+# print("Should be val-9:", test_table.get("key-9"))
+# test_table.delete("key-1")
+# test_table.delete("key-3")
+# test_table.delete("key-5")
+# test_table.delete("key-7")
+# test_table.delete("key-9")
+# print("Should be val-0:", test_table.get("key-0"))
+# print("Should be None:", test_table.get("key-1"))
+# print("Should be val-2", test_table.get("key-2"))
+# print("Should be None", test_table.get("key-3"))
+# print("Should be val-4", test_table.get("key-4"))
+# print("Should be None", test_table.get("key-5"))
+# print("Should be val-6", test_table.get("key-6"))
+# print("Should be None", test_table.get("key-7"))
+# print("Should be val-8:", test_table.get("key-8"))
+# print("Should be None:", test_table.get("key-9"))
