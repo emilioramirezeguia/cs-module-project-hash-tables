@@ -100,6 +100,10 @@ class HashTable:
 
         Implement this.
         """
+        # check if resize is necessary
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+
         index = self.hash_index(key)
         new_node = HashTableEntry(key, value)
         current_node = self.buckets[index]
@@ -130,6 +134,13 @@ class HashTable:
 
         Implement this.
         """
+        # check if resize is necessary
+        if self.get_load_factor() < 0.2:
+            if self.capacity // 2 > MIN_CAPACITY:
+                self.resize(self.capacity // 2)
+            else:
+                self.resize(MIN_CAPACITY)
+
         index = self.hash_index(key)
         current_node = self.buckets[index]
 
