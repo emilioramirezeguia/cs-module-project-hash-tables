@@ -41,7 +41,7 @@ class HashTable:
 
         Implement this.
         """
-        return len(self.buckets)
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -49,7 +49,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.items / self.get_num_slots()
+        return self.items / self.capacity
 
     def fnv1(self, key):
         """
@@ -186,8 +186,22 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
+
+        # save old list as a variable
+        # update the current capacity to the new capacity
+        # create a new list full of Nones equal to the updated capacity
+        # reset items count
+        # iterate through old buckets, traverse through each linked list, call put() on each node and update item count
         """
-        # Your code here
+        old_buckets = self.buckets
+        self.capacity = new_capacity
+        self.buckets = [None] * self.capacity
+        self.items = 0
+        for node in old_buckets:
+            while node is not None:
+                self.put(node.key, node.value)
+                self.items += 1
+                node = node.next
 
 
 if __name__ == "__main__":
