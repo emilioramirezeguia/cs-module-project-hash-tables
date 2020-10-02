@@ -15,6 +15,21 @@ def no_dups(s):
     return new_s
 
 
+'''
+words = s.split()
+
+dictionary = {}
+result = []
+
+for word in words:
+    if word not in dictionary:
+        d[word] = True
+        result.append(word)
+
+return " ".join(result)
+'''
+
+
 if __name__ == "__main__":
     print(no_dups(""))
     print(no_dups("hello"))

@@ -26,10 +26,9 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity
+        # buckets are the number of slots we have available in our list
         self.buckets = [None] * capacity
         self.items = 0
-
-    # def __repr__(self):
 
     def get_num_slots(self):
         """
@@ -249,39 +248,3 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
-# test_table = HashTable(8)
-# test_table.put("key-0", "val-0")
-# test_table.put("key-1", "val-1")
-# test_table.put("key-2", "val-2")
-# test_table.put("key-3", "val-3")
-# test_table.put("key-4", "val-4")
-# test_table.put("key-5", "val-5")
-# test_table.put("key-6", "val-6")
-# test_table.put("key-7", "val-7")
-# test_table.put("key-8", "val-8")
-# test_table.put("key-9", "val-9")
-# print("Should be val-0:", test_table.get("key-0"))
-# print("Should be val-1:", test_table.get("key-1"))
-# print("Should be val-2", test_table.get("key-2"))
-# print("Should be val-3", test_table.get("key-3"))
-# print("Should be val-4", test_table.get("key-4"))
-# print("Should be val-5", test_table.get("key-5"))
-# print("Should be val-6", test_table.get("key-6"))
-# print("Should be val-7", test_table.get("key-7"))
-# print("Should be val-8:", test_table.get("key-8"))
-# print("Should be val-9:", test_table.get("key-9"))
-# test_table.delete("key-1")
-# test_table.delete("key-3")
-# test_table.delete("key-5")
-# test_table.delete("key-7")
-# test_table.delete("key-9")
-# print("Should be val-0:", test_table.get("key-0"))
-# print("Should be None:", test_table.get("key-1"))
-# print("Should be val-2", test_table.get("key-2"))
-# print("Should be None", test_table.get("key-3"))
-# print("Should be val-4", test_table.get("key-4"))
-# print("Should be None", test_table.get("key-5"))
-# print("Should be val-6", test_table.get("key-6"))
-# print("Should be None", test_table.get("key-7"))
-# print("Should be val-8:", test_table.get("key-8"))
-# print("Should be None:", test_table.get("key-9"))
