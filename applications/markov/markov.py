@@ -36,12 +36,20 @@ for i in range(len(words) - 1):
     else:
         dictionary[words[i]].append(words[i + 1])
 
-random_word = random.choice(words)
-
-print("Dictionry", dictionary)
-print("Start", start)
-print("Stop", stop)
-print("Random Word", random_word)
-
 # TODO: construct 5 random sentences
-# Your code here
+
+
+def sentence_generator(word):
+    sentence = ""
+    while word not in stop:
+        sentence += word + " "
+        word = random.choice(dictionary.get(word))
+    sentence += word
+    print(sentence)
+
+
+sentence_generator(random.choice(start))
+sentence_generator(random.choice(start))
+sentence_generator(random.choice(start))
+sentence_generator(random.choice(start))
+sentence_generator(random.choice(start))
